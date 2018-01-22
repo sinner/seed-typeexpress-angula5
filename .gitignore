@@ -1,0 +1,44 @@
+# @w3tec
+
+# Logs #
+server/logs
+*.log
+*.log*
+
+# Node files #
+server/node_modules/
+server/npm-debug.log
+server/yarn-error.log
+server/.env
+
+# OS generated files #
+server/.DS_Store
+*.DS_Store
+server/Thumbs.db
+
+# Typing #
+server/typings/
+
+# Dist #
+server/dist/
+server/ormconfig.json
+server/tsconfig.build.json
+
+# IDE #
+/.idea/
+.idea/
+server/*.swp
+server/.awcache
+
+# Generated source-code #
+server/src/**/*.js
+server/src/**/*.js.map
+server/test/**/*.js
+server/test/**/*.js.map
+server/coverage/
+server/!test/preprocessor.js
+server/mydb.sql
+server/.npm/
+server/.node-gyp/
+server/.config/
+server/.cache/

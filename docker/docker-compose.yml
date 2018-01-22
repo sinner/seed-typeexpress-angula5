@@ -1,0 +1,76 @@
+version: "2"
+services:
+  mongodb:
+    image: mongo:latest
+    env_file: .env
+    hostname: mongodb
+    container_name: ${PROJECTNAME}-mongodb
+    ports:
+      - "27017:27017"
+      - "27018:27018"
+    volumes_from:
+      - mongodbdata
+
+  mongodbdata:
+    image: tianon/true
+    container_name: mongodb-data
+    volumes:
+      - /data/db
+
+  redis:
+    image: "redis:alpine"
+    env_file: .env
+    container_name: ${PROJECTNAME}-redis
+    ports:
+        - "6379:6379"
+  
+  express:
+    build:
+      context: ../server
+      dockerfile: ./Dockerfile
+    env_file: .env
+    container_name: ${PROJECTNAME}-express
+    hostname: ${PROJECTNAME}-express
+    mem_limit: "2G"
+    memswap_limit: "2G"
+    cpuset: "2"
+    restart: always
+    ports:
+    - "3000:3000"
+    restart: on-failure
+    privileged: true
+    depends_on:
+      - mongodb
+      - redis
+    links:
+      - mongodb
+      - redis
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    tty: true
+    volumes:
+      - "../server/:/usr/src/app"
+
+  webapp:
+    build:
+      context: ../web-app
+      dockerfile: ./Dockerfile
+    env_file: .env
+    container_name: ${PROJECTNAME}-web-app
+    hostname: ${PROJECTNAME}-web-app
+    mem_limit: "1G"
+    memswap_limit: "1G"
+    cpuset: "1"
+    restart: always
+    ports:
+    - "8080:8080"
+    restart: on-failure
+    privileged: true
+    depends_on:
+      - express
+    links:
+      - express
+    tty: true
+    volumes:
+      - "../web-app/:/usr/src/app"
